@@ -1,12 +1,15 @@
 package clienteservidor.angelus.ejemplopersona.modelo;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.Date;
 
 /**
  * Created by Angelus on 19/08/2017.
  */
 
-public class Persona {
+public class Persona implements Parcelable {
     private int id;
     private String nombre;
     private String apellidos;
@@ -23,6 +26,25 @@ public class Persona {
         this.estadocivil = estadocivil;
         this.fechanac = fechanac;
     }
+
+    protected Persona(Parcel in) {
+        id = in.readInt();
+        nombre = in.readString();
+        apellidos = in.readString();
+        estadocivil = in.readString();
+    }
+
+    public static final Creator<Persona> CREATOR = new Creator<Persona>() {
+        @Override
+        public Persona createFromParcel(Parcel in) {
+            return new Persona(in);
+        }
+
+        @Override
+        public Persona[] newArray(int size) {
+            return new Persona[size];
+        }
+    };
 
     @Override
     public String toString() {
@@ -73,5 +95,18 @@ public class Persona {
 
     public void setFechanac(Date fechanac) {
         this.fechanac = fechanac;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
+        dest.writeString(nombre);
+        dest.writeString(apellidos);
+        dest.writeString(estadocivil);
     }
 }

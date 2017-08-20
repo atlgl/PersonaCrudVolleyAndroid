@@ -65,20 +65,24 @@ public class ListaPersonasActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
+                if(personaList!=null){
+                  Intent intent=new Intent(getBaseContext(),MainActivity_Mostrar.class);
+                    intent.putExtra("operacion","editar");
+                    intent.putExtra("persona",personaList.get(position));
+                    startActivity(intent);
+                }
                // startActivity(new Intent(getBaseContext(),MainActivity_Mostrar.class));
             }
         });
     }
 
     private void getPersona(){
-        String url="http://www.legionx.com.mx/inventariolabs/public/android/persona";
+        String url="http://10.0.2.2/inventariolabs/public/android/persona";
         RequestQueue volleyCola= Volley.newRequestQueue(getBaseContext());
         JsonArrayRequest jsonArrayRequest=new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
-
                 personaList=new ArrayList<>();
-
                 try{
                     for (int i=0;i<response.length();i++){
                         JSONObject object=response.getJSONObject(i);
@@ -87,19 +91,12 @@ public class ListaPersonasActivity extends AppCompatActivity {
                         p.setNombre(object.getString("nombre"));
                         p.setApellidos(object.getString("apellidos"));
                         p.setEstadocivil(object.getString("estadocivil"));
-
                         personaList.add(p);
-
                     }}catch (Exception ex){
                     ex.printStackTrace();
                 }
-
                 //Toast.makeText(getBaseContext(),response.toString(),Toast.LENGTH_LONG).show();
-
-
-
                 listView.setAdapter(new AdapterPersona(getBaseContext(),personaList));
-
             }
         }, new Response.ErrorListener() {
             @Override
@@ -107,7 +104,38 @@ public class ListaPersonasActivity extends AppCompatActivity {
 
             }
         });
+        volleyCola.add(jsonArrayRequest);
+    }
 
+
+    private void setPersona(){
+        String url="http://10.0.2.2/inventariolabs/public/android/persona";
+        RequestQueue volleyCola= Volley.newRequestQueue(getBaseContext());
+        JsonArrayRequest jsonArrayRequest=new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                personaList=new ArrayList<>();
+                try{
+                    for (int i=0;i<response.length();i++){
+                        JSONObject object=response.getJSONObject(i);
+                        Persona p=new Persona();
+                        p.setId(object.getInt("id"));
+                        p.setNombre(object.getString("nombre"));
+                        p.setApellidos(object.getString("apellidos"));
+                        p.setEstadocivil(object.getString("estadocivil"));
+                        personaList.add(p);
+                    }}catch (Exception ex){
+                    ex.printStackTrace();
+                }
+                //Toast.makeText(getBaseContext(),response.toString(),Toast.LENGTH_LONG).show();
+                listView.setAdapter(new AdapterPersona(getBaseContext(),personaList));
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
         volleyCola.add(jsonArrayRequest);
     }
 

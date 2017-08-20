@@ -25,6 +25,8 @@ import org.json.JSONObject;
 
 import java.net.Authenticator;
 
+import clienteservidor.angelus.ejemplopersona.modelo.Persona;
+
 public class MainActivity_Mostrar extends AppCompatActivity {
 
     String url="http://10.0.2.2/inventariolabs/public/android/persona";
@@ -68,23 +70,32 @@ public class MainActivity_Mostrar extends AppCompatActivity {
         oper=intent.getStringExtra("operacion");
         volley= Volley.newRequestQueue(getBaseContext());
 
+        if(oper.equals("editar")){
+            Persona persona=intent.getParcelableExtra("persona");
+            txtid.setText(String.valueOf(persona.getId()));
+            txtnombre.setText(persona.getNombre());
+            txtapellido.setText(persona.getApellidos());
+            edad.setText(persona.getFechanac().toString());
+            estadocivil.setText(persona.getEstadocivil());
+        }
+
+
         btnguardar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(oper.equals("guardar"))
                 {
-                    setPersona();
+                    savePersona();
+                }
+                else if(oper.equals("editar")){
+
+                    editPersona();
+
                 }
             }
         });
-
-
-
-
-
-
-
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -108,13 +119,13 @@ public class MainActivity_Mostrar extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void setPersona(){
+    private void savePersona(){
 
 
         JSONObject object = new JSONObject();
         try {
 
-            object.put("_token","XM3VAVfvmvZJS2b73aVXD1stBBaTbYOwFNMPFm5p");
+
             object.put("nombre", txtnombre.getText().toString());
             object.put("apellidos", txtapellido.getText().toString());
             object.put("estadocivil", estadocivil.getText().toString());
@@ -139,6 +150,10 @@ public class MainActivity_Mostrar extends AppCompatActivity {
 
         volley.add(objectRequest);
 
+    }
+
+
+    private void editPersona() {
     }
 
 
