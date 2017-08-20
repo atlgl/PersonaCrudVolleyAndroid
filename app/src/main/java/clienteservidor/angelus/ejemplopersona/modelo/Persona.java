@@ -14,12 +14,12 @@ public class Persona implements Parcelable {
     private String nombre;
     private String apellidos;
     private String estadocivil;
-    private Date fechanac;
+    private String fechanac;
 
     public Persona() {
     }
 
-    public Persona(int id, String nombre, String apellidos, String estadocivil, Date fechanac) {
+    public Persona(int id, String nombre, String apellidos, String estadocivil, String fechanac) {
         this.id = id;
         this.nombre = nombre;
         this.apellidos = apellidos;
@@ -32,6 +32,7 @@ public class Persona implements Parcelable {
         nombre = in.readString();
         apellidos = in.readString();
         estadocivil = in.readString();
+        fechanac=in.readString();
     }
 
     public static final Creator<Persona> CREATOR = new Creator<Persona>() {
@@ -89,11 +90,11 @@ public class Persona implements Parcelable {
         this.estadocivil = estadocivil;
     }
 
-    public Date getFechanac() {
+    public String getFechanac() {
         return fechanac;
     }
 
-    public void setFechanac(Date fechanac) {
+    public void setFechanac(String fechanac) {
         this.fechanac = fechanac;
     }
 
@@ -108,5 +109,6 @@ public class Persona implements Parcelable {
         dest.writeString(nombre);
         dest.writeString(apellidos);
         dest.writeString(estadocivil);
+        dest.writeString(fechanac);
     }
 }

@@ -1,4 +1,10 @@
 <resources>
     <string name="app_name">EjemploPersona</string>
     <string name="title_activity_lista_personas">Personas</string>
+    <string name="lblestadocivil">Estado Civil</string>
+
+    <string-array name="estadocivil">
+        <item>Casado</item>
+        <item>Soltero</item>
+    </string-array>
 </resources>

@@ -53,7 +53,7 @@ public class AdapterPersona extends ArrayAdapter<Persona> {
         txtnombre.setText(personaList.get(position).getNombre());
         txtapellidos.setText(personaList.get(position).getApellidos());
         txtestadocivil.setText(personaList.get(position).getEstadocivil());
-        txtfechanac.setText(personaList.get(position).getEstadocivil());
+        txtfechanac.setText(personaList.get(position).getFechanac().toString());
 
         return view;
     }

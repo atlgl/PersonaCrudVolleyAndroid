@@ -5,12 +5,11 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -20,7 +19,6 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -32,7 +30,7 @@ import clienteservidor.angelus.ejemplopersona.modelo.Persona;
 public class ListaPersonasActivity extends AppCompatActivity {
     private ListView listView;
 
-    private EditText txtbuscar;
+    private Button btnbuscar;
 
 
     private List<Persona> personaList;
@@ -58,7 +56,7 @@ public class ListaPersonasActivity extends AppCompatActivity {
 
         listView=(ListView) findViewById(R.id.listviewpersona);
 
-        txtbuscar=(EditText) findViewById(R.id.txtbuscarpersona);
+        btnbuscar=(Button) findViewById(R.id.btnactualizar);
         getPersona();
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -74,10 +72,30 @@ public class ListaPersonasActivity extends AppCompatActivity {
                // startActivity(new Intent(getBaseContext(),MainActivity_Mostrar.class));
             }
         });
+
+        btnbuscar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getPersona();
+            }
+        });
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        getPersona();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getPersona();
     }
 
     private void getPersona(){
-        String url="http://10.0.2.2/inventariolabs/public/android/persona";
+
+        String url="http://www.legionx.com.mx/inventariolabs/public/android/persona";
         RequestQueue volleyCola= Volley.newRequestQueue(getBaseContext());
         JsonArrayRequest jsonArrayRequest=new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
             @Override
@@ -91,6 +109,7 @@ public class ListaPersonasActivity extends AppCompatActivity {
                         p.setNombre(object.getString("nombre"));
                         p.setApellidos(object.getString("apellidos"));
                         p.setEstadocivil(object.getString("estadocivil"));
+                        p.setFechanac(object.getString("fechanac"));
                         personaList.add(p);
                     }}catch (Exception ex){
                     ex.printStackTrace();
@@ -108,36 +127,6 @@ public class ListaPersonasActivity extends AppCompatActivity {
     }
 
 
-    private void setPersona(){
-        String url="http://10.0.2.2/inventariolabs/public/android/persona";
-        RequestQueue volleyCola= Volley.newRequestQueue(getBaseContext());
-        JsonArrayRequest jsonArrayRequest=new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
-            @Override
-            public void onResponse(JSONArray response) {
-                personaList=new ArrayList<>();
-                try{
-                    for (int i=0;i<response.length();i++){
-                        JSONObject object=response.getJSONObject(i);
-                        Persona p=new Persona();
-                        p.setId(object.getInt("id"));
-                        p.setNombre(object.getString("nombre"));
-                        p.setApellidos(object.getString("apellidos"));
-                        p.setEstadocivil(object.getString("estadocivil"));
-                        personaList.add(p);
-                    }}catch (Exception ex){
-                    ex.printStackTrace();
-                }
-                //Toast.makeText(getBaseContext(),response.toString(),Toast.LENGTH_LONG).show();
-                listView.setAdapter(new AdapterPersona(getBaseContext(),personaList));
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
-            }
-        });
-        volleyCola.add(jsonArrayRequest);
-    }
 
 
 

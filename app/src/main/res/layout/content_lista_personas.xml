@@ -8,13 +8,12 @@
     tools:context="clienteservidor.angelus.ejemplopersona.ListaPersonasActivity"
     tools:showIn="@layout/activity_lista_personas">
 
-    <EditText
-        android:id="@+id/txtbuscarpersona"
-        android:layout_width="0dp"
+    <Button
+        android:id="@+id/btnactualizar"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:inputType="textPersonName"
-        android:text="Name"
+        android:text="Actualizar"
         app:layout_constraintHorizontal_bias="0.538"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -22,14 +21,16 @@
 
     <ListView
         android:id="@+id/listviewpersona"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginBottom="0dp"
-        android:layout_marginLeft="0dp"
-        android:layout_marginRight="0dp"
-        android:layout_marginTop="0dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtbuscarpersona" />
+        app:layout_constraintTop_toBottomOf="@+id/btnactualizar"
+        app:layout_constraintHorizontal_bias="0.0"
+        android:layout_marginRight="8dp"
+        app:layout_constraintVertical_bias="0.0"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginLeft="8dp" />
 </android.support.constraint.ConstraintLayout>

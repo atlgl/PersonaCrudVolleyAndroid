@@ -1,16 +1,17 @@
 package clienteservidor.angelus.ejemplopersona;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,50 +22,54 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.net.Authenticator;
 
 import clienteservidor.angelus.ejemplopersona.modelo.Persona;
 
 public class MainActivity_Mostrar extends AppCompatActivity {
 
-    String url="http://10.0.2.2/inventariolabs/public/android/persona";
+    String url="http://www.legionx.com.mx/inventariolabs/public/android/persona";
     private TextView txtid;
     private EditText txtnombre;
     private EditText txtapellido;
     private EditText edad;
-    private EditText estadocivil;
+    private Spinner estadocivil;
     private Button btnguardar;
     private Button btnregresar;
-    RequestQueue volley;
-    String oper;
+
+    private RequestQueue volley;
+    private String oper;
+
+    private String opcSpinner;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main__mostrar);
-       // Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        //setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
 
-        txtid=(TextView) findViewById(R.id.txtId);
+        txtid=(TextView) findViewById(R.id.txtid);
         txtnombre=(EditText) findViewById(R.id.txtnombre);
         txtapellido=(EditText) findViewById(R.id.txtape);
         edad=(EditText) findViewById(R.id.txtedad);
-        estadocivil=(EditText) findViewById(R.id.txtestado);
+        estadocivil=(Spinner) findViewById(R.id.txtestado);
 
         btnguardar=(Button) findViewById(R.id.btnguardar);
         btnregresar=(Button) findViewById(R.id.btnregresar);
+
+        estadocivil.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                opcSpinner=(String)estadocivil.getSelectedItem();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
 
         Intent intent=getIntent();
         oper=intent.getStringExtra("operacion");
@@ -76,7 +81,7 @@ public class MainActivity_Mostrar extends AppCompatActivity {
             txtnombre.setText(persona.getNombre());
             txtapellido.setText(persona.getApellidos());
             edad.setText(persona.getFechanac().toString());
-            estadocivil.setText(persona.getEstadocivil());
+            estadocivil.setSelection(1);
         }
 
 
@@ -85,13 +90,32 @@ public class MainActivity_Mostrar extends AppCompatActivity {
             public void onClick(View v) {
                 if(oper.equals("guardar"))
                 {
-                    savePersona();
+                    savePersona(1);
                 }
                 else if(oper.equals("editar")){
 
-                    editPersona();
+                    savePersona(2);
 
                 }
+            }
+        });
+
+        btnregresar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                AlertDialog.Builder alerta=new AlertDialog.Builder(MainActivity_Mostrar.this);
+                alerta.setTitle("Aviso");
+                alerta.setCancelable(true);
+                alerta.setMessage("Esta Seguro de eliminar el elemento");
+                alerta.setPositiveButton("ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        savePersona(3);
+                    }
+                });
+                alerta.show();
+
             }
         });
     }
@@ -119,27 +143,40 @@ public class MainActivity_Mostrar extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void savePersona(){
+    private void savePersona(int opc){
 
 
         JSONObject object = new JSONObject();
         try {
 
+            if (opc==2){
+                object.put("id", txtid.getText().toString());
+                url=url+"/"+txtid.getText().toString();
+            }
+            if(opc==3){
+                url=url+"/"+txtid.getText().toString();
+            }
 
             object.put("nombre", txtnombre.getText().toString());
             object.put("apellidos", txtapellido.getText().toString());
-            object.put("estadocivil", estadocivil.getText().toString());
+            object.put("estadocivil", opcSpinner);
             object.put("fechanac", edad.getText().toString());
         }catch (Exception ex){
             ex.printStackTrace();
         }
 
-        JsonObjectRequest objectRequest=new JsonObjectRequest(Request.Method.POST,url,object,
+
+
+        JsonObjectRequest objectRequest=new JsonObjectRequest(opc,url,object,
                 new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                Toast.makeText(getBaseContext(),response.toString(),Toast.LENGTH_LONG).show();
-
+                try {
+                    Toast.makeText(getBaseContext(),response.getString("mensaje"),Toast.LENGTH_LONG).show();
+                    finish();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         }, new Response.ErrorListener() {
             @Override
@@ -153,8 +190,8 @@ public class MainActivity_Mostrar extends AppCompatActivity {
     }
 
 
-    private void editPersona() {
-    }
+
+
 
 
 }
